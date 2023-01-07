@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
+	import { fade } from 'svelte/transition';
 	import Tile from './tile.svelte';
 
 	let tiles: Array<number> = Array.from({ length: 10 }, (_, i) => i);
@@ -16,7 +17,7 @@
 
 	<div class="board-containter">
 		{#each tiles as i (i)}
-			<div animate:flip={{ duration: 100 }}>
+			<div animate:flip={{ duration: 100, delay: 150 }} out:fade={{ duration: 100 }}>
 				<Tile index={i} />
 			</div>
 		{/each}
