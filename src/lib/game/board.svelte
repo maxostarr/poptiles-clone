@@ -29,6 +29,6 @@
 	.board-containter {
 		display: flex;
 		flex-direction: column-reverse;
-		height: 90vh;
+		height: 900px;
 	}
 </style>
