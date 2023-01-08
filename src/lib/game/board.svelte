@@ -22,7 +22,7 @@
 					out:fade={{ duration: 100 }}
 					on:click={() => handleTileClick(tileX, tileY)}
 				>
-					<Tile />
+					<Tile type={tile.type} />
 				</div>
 			{/each}
 		</div>
