@@ -6,7 +6,7 @@ export const BOARD_WIDTH = 7;
 export const BOARD_HEIGHT = 14;
 
 export interface Tile {
-	index: number;
+	id: string;
 	type: number;
 }
 
@@ -16,7 +16,7 @@ function initBoard() {
 		board.push([]);
 		for (let x = 0; x < 3; x++) {
 			board[y].push({
-				index: y * BOARD_WIDTH + x,
+				id: crypto.randomUUID(),
 				type: tileTypes[Math.floor(Math.random() * tileTypes.length)]
 			});
 		}

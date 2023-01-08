@@ -15,13 +15,13 @@
 
 	{#each $board as row, tileX (tileX)}
 		<div class="column">
-			{#each row as tile, tileY (tile.index)}
+			{#each row as tile, tileY (tile.id)}
 				<div
 					animate:flip={{ duration: 100, delay: 150 }}
 					out:fade={{ duration: 100 }}
 					on:click={() => handleTileClick(tileX, tileY)}
 				>
-					<Tile index={tile.index} />
+					<Tile />
 				</div>
 			{/each}
 		</div>

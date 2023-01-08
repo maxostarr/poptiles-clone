@@ -3,14 +3,16 @@
 
 	let color = colors[Math.floor(Math.random() * colors.length)];
 
-	export let index: number;
+	export let index: number | null = null;
 </script>
 
 <!-- Create tile and set background color -->
 <div class="tile" style="background-color: {color}">
-	<p class="index">
-		{index}
-	</p>
+	{#if index !== null}
+		<p class="index">
+			{index}
+		</p>
+	{/if}
 </div>
 
 <style>
