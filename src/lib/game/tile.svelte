@@ -1,16 +1,5 @@
 <script lang="ts">
-	const colors = [
-		'red',
-		'blue',
-		'green',
-		'yellow',
-		'orange',
-		'purple',
-		'pink',
-		'brown',
-		'black',
-		'white'
-	];
+	const colors = ['red', 'blue', 'green', 'yellow'];
 
 	let color = colors[Math.floor(Math.random() * colors.length)];
 
