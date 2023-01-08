@@ -12,7 +12,7 @@ export interface Tile {
 
 function initBoard() {
 	const board: Array<Array<Tile>> = [];
-	for (let y = 0; y < BOARD_HEIGHT; y++) {
+	for (let y = 0; y < BOARD_WIDTH; y++) {
 		board.push([]);
 		for (let x = 0; x < 3; x++) {
 			board[y].push({
