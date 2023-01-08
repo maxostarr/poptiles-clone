@@ -6,14 +6,7 @@
 	import { board, removeTile } from './store';
 
 	function handleTileClick(tileX: number, tileY: number) {
-		console.log(
-			'🚀 ~ file: board.svelte:9 ~ handleTileClick ~ tileX: number, tileY: number',
-			tileX,
-			tileY
-		);
-		console.log('🚀 ~ file: board.svelte:7 ~ board', $board);
 		removeTile(tileX, tileY);
-		console.log('🚀 ~ file: board.svelte:7 ~ board', $board);
 	}
 </script>
 

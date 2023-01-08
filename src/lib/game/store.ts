@@ -27,7 +27,6 @@ function initBoard() {
 export function removeTile(x: number, y: number) {
 	board.update((board) => {
 		board[x] = board[x].filter((_, i) => i !== y);
-		console.log('🚀 ~ file: store.ts:22 ~ board.update ~ board[x]', board[x]);
 		return board;
 	});
 }
