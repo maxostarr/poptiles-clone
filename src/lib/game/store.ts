@@ -7,8 +7,6 @@ export const BOARD_HEIGHT = 14;
 
 export interface Tile {
 	id: string;
-	x: number;
-	y: number;
 	type: number;
 }
 
@@ -16,12 +14,10 @@ function initBoard() {
 	const board: Array<Array<Tile>> = [];
 	for (let x = 0; x < BOARD_WIDTH; x++) {
 		board.push([]);
-		for (let y = 0; y < 3; y++) {
+		for (let y = 0; y < 10; y++) {
 			board[x].push({
 				id: crypto.randomUUID(),
-				type: tileTypes[Math.floor(Math.random() * tileTypes.length)],
-				x,
-				y
+				type: tileTypes[Math.floor(Math.random() * tileTypes.length)]
 			});
 		}
 	}
@@ -43,8 +39,19 @@ function* getAdjacentTiles(board: Tile[][], x: number, y: number) {
 	}
 }
 
-function findLikeAdjacentTiles(board: Tile[][], x: number, y: number) {
-	const tile = board[x][y];
+function findTileLocation(board: Tile[][], tile: Tile) {
+	for (let x = 0; x < board.length; x++) {
+		for (let y = 0; y < board[x].length; y++) {
+			if (board[x][y].id === tile.id) {
+				return { x, y };
+			}
+		}
+	}
+	throw new Error('Tile not found');
+}
+
+function findLikeAdjacentTiles(board: Tile[][], tile: Tile) {
+	const { x, y } = findTileLocation(board, tile);
 	const tiles: Tile[] = [];
 	for (const adjacentTile of getAdjacentTiles(board, x, y)) {
 		if (adjacentTile.type === tile.type) {
@@ -54,10 +61,10 @@ function findLikeAdjacentTiles(board: Tile[][], x: number, y: number) {
 	return tiles;
 }
 
-function findAllLikeConnectedTiles(board: Tile[][], x: number, y: number) {
+function findAllLikeConnectedTiles(board: Tile[][], startingTile: Tile) {
 	const tiles: Tile[] = [];
 	const visited: Tile[] = [];
-	const queue: Tile[] = [board[x][y]];
+	const queue: Tile[] = [startingTile];
 	while (queue.length > 0) {
 		const tile = queue.shift();
 		if (!tile) {
@@ -68,7 +75,7 @@ function findAllLikeConnectedTiles(board: Tile[][], x: number, y: number) {
 		}
 		visited.push(tile);
 		tiles.push(tile);
-		for (const adjacentTile of findLikeAdjacentTiles(board, x, y)) {
+		for (const adjacentTile of findLikeAdjacentTiles(board, tile)) {
 			queue.push(adjacentTile);
 		}
 	}
@@ -77,10 +84,10 @@ function findAllLikeConnectedTiles(board: Tile[][], x: number, y: number) {
 
 export function removeTile(x: number, y: number) {
 	board.update((board) => {
-		const tiles = findAllLikeConnectedTiles(board, x, y);
-		console.log('🚀 ~ file: store.ts:81 ~ board.update ~ tiles', tiles);
+		const tiles = findAllLikeConnectedTiles(board, board[x][y]);
 		for (const tile of tiles) {
-			board[tile.x] = board[tile.x].filter((t) => t.id !== tile.id);
+			const { x } = findTileLocation(board, tile);
+			board[x] = board[x].filter((t) => t.id !== tile.id);
 		}
 		return board;
 	});
