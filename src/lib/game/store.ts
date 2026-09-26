@@ -11,7 +11,11 @@ export interface Tile {
 	type: number;
 }
 
-export const board: Writable<Tile[][]> = writable([[{ id: '1', type: 0 }]]);
+export const board: Writable<Tile[][]> = writable(initBoard());
+
+board.subscribe((newBoard) => {
+    console.log(newBoard)
+})
 
 function generateColumn(currentBoard: Tile[][], x: number) {
 	const column: Tile[] = [];
@@ -189,4 +193,3 @@ export function removeTile(x: number, y: number) {
     }
 }
 
-board.set(initBoard());
