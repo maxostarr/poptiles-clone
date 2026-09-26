@@ -168,7 +168,7 @@ export function removeTile(x: number, y: number) {
 
 		// Remove all tiles in groups of three
 		// Until no more tiles are removed
-		let [newBoard, tilesRemoved] = removeTilesInGroupsOfThree(board);
+		const [newBoard, tilesRemoved] = removeTilesInGroupsOfThree(board);
 		// while (tilesRemoved > 0) {
 		// 	[newBoard, tilesRemoved] = removeTilesInGroupsOfThree(newBoard);
 		// }

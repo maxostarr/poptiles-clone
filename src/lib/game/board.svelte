@@ -17,6 +17,7 @@
 	{#each $board as column, tileX (tileX)}
 		<div class="column">
 			{#each column as tile, tileY (tile.id)}
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div
 					animate:flip={{ duration: 100, delay: 150 }}
 					out:fade={{ duration: 100 }}
