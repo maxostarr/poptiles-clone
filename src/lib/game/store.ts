@@ -164,10 +164,7 @@ function removeTilesInGroupsOfThree(currentBoard: Tile[][]) {
 export function removeTile(x: number, y: number) {
 	board.update((board) => {
 		const tiles = findAllLikeConnectedTiles(board, board[x][y]);
-		for (const tile of tiles) {
-			const { x } = findTileLocation(board, tile);
-			board[x] = board[x].filter((t) => t.id !== tile.id);
-		}
+		removeTilesFromBoard(board, tiles)
 
 		// Remove all tiles in groups of three
 		// Until no more tiles are removed
@@ -179,6 +176,17 @@ export function removeTile(x: number, y: number) {
 
 		return board;
 	});
+
+    function removeTilesFromBoard(board: Tile[][], tiles: Tile[],) {
+        for (const tile of tiles) {
+            removeTileFromBoard(board, tile)
+        }
+    }
+
+    function removeTileFromBoard(board: Tile[][], tile: Tile) {
+        const {x} = findTileLocation(board, tile)
+        board[x] = board[x].filter((t) => t.id !== tile.id)
+    }
 }
 
 board.set(initBoard());
