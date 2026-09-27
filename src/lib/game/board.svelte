@@ -7,14 +7,19 @@
 
     let lost = false
 
+    board.subscribe((board) => {
+        lost = checkLoss(board)
+    })
+
 	function handleTileClick(tileX: number, tileY: number) {
-		removeTile(tileX, tileY);
-        lost = checkLoss($board)
+        if (!lost) {
+            removeTile(tileX, tileY);
+        }
 	}
 </script>
 
 
-<section>
+<section class={{lost}}>
 	{#each $board as column, tileX (tileX)}
 		<div class="column">
 			{#each column as tile, tileY (tile.id)}
@@ -33,6 +38,10 @@
 </section>
 
 <style>
+    .lost {
+        pointer-events: none;
+        filter: grayscale(100%);
+    }
 	.column {
 		display: flex;
 		flex-direction: column-reverse;

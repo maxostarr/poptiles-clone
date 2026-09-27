@@ -258,7 +258,7 @@ function resolveTileGroups(board: Tile[][]) {
 }
 
 export function checkLoss(board: Tile[][]) {
-  return board.some((column) => column.length >= BOARD_HEIGHT);
+  return board.some((column) => column.length > BOARD_HEIGHT);
 }
 
 function resolveTileNeighbors(board: Tile[][], pos: { x: number; y: number }) {
