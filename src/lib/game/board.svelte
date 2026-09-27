@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
-	import { fade } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 
 	import Tile from './tile.svelte';
 	import { addRow, board, checkLoss, removeTile, seed } from './store';
@@ -21,6 +21,7 @@
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div
 					animate:flip={{ duration: 100, delay: 150 }}
+                    in:fly={{y: 50, duration: 100, delay: 150}}
 					out:fade={{ duration: 100 }}
 					on:click={() => handleTileClick(tileX, tileY)}
 				>
