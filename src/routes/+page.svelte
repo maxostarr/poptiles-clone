@@ -4,6 +4,7 @@
 
     function resetBoard() {
         board.set(initBoard())
+        removedCount.set(0)
     }
 </script>
 

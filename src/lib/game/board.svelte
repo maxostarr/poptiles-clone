@@ -4,6 +4,7 @@
 
 	import Tile from './tile.svelte';
 	import { lost, board, checkLoss, initBoard, removeTile, seed } from './store';
+	import {popAway} from './popAway';
 
 
 	function handleTileClick(tileX: number, tileY: number) {
