@@ -100,7 +100,7 @@ export function addRow(board: Tile[][]): Tile[][] {
   const newBoard = structuredClone(board);
   for (let x = 0; x < board.length; x++) {
     const columnBottom = board[x][0];
-    const leftTwoTilesLike = x > 1 && board[x - 2][0].type === board[x - 1][0].type;
+    const leftTwoTilesLike = x > 1 && newBoard[x - 2][0].type === newBoard[x - 1][0].type;
     const availableTypes = tileTypes
       .filter((t) => (columnBottom.likeNeighbors.north ? t !== columnBottom.type : true))
       .filter((t) => (leftTwoTilesLike ? t !== board[x - 2][0].type : true));
