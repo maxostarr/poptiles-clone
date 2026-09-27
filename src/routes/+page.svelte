@@ -1,6 +1,6 @@
 <script>
 	import Board from '$lib/game/board.svelte';
-	import {board, initBoard, lost} from '$lib/game/store';
+	import {board, initBoard, lost, removedCount} from '$lib/game/store';
 
     function resetBoard() {
         board.set(initBoard())
@@ -14,6 +14,10 @@
 
 <section>
 	<h1>Clone of Poptiles</h1>
+
+    <div>
+        <h2>Removed: {$removedCount}</h2>
+    </div>
 
     <div class="wrapper">
         {#if $lost}

@@ -28,6 +28,7 @@ const rand = new Rand(seed);
 
 export const board: Writable<Tile[][]> = writable(initBoard());
 export const lost = derived(board, checkLoss);
+export const removedCount: Writable<number> = writable(0);
 
 function generateColumn(currentBoard: Tile[][], x: number) {
   const column: Tile[] = [];
@@ -210,6 +211,7 @@ function removeTilesInGroupsOfThree(currentBoard: Tile[][]) {
   for (const tilePos of tilePositions) {
     const [x, y] = tilePos.split("-").map(Number);
     board[x][y] = null as unknown as Tile;
+    removedCount.update((c) => c + 1);
   }
   const cleanedBoard = board.map((column) => column.filter(Boolean));
   return [cleanedBoard, tilePositions.size] as const;
@@ -246,6 +248,7 @@ export async function removeTile(x: number, y: number) {
   function removeTileFromBoard(board: Tile[][], tile: Tile) {
     const { x } = findTileLocation(board, tile);
     board[x] = board[x].filter((t) => t.id !== tile.id);
+    removedCount.update((c) => c + 1);
   }
 }
 
