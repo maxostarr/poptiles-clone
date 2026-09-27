@@ -1,4 +1,4 @@
-import { writable, type Writable } from "svelte/store";
+import { writable, type Writable, derived } from "svelte/store";
 import Rand from "rand-seed";
 
 export const tileTypes = [0, 1, 2, 3];
@@ -27,6 +27,7 @@ export const seed = "0.4574482531201898";
 const rand = new Rand(seed);
 
 export const board: Writable<Tile[][]> = writable(resolveTileGroups(initBoard()));
+export const lost = derived(board, checkLoss);
 
 function generateColumn(currentBoard: Tile[][], x: number) {
   const column: Tile[] = [];
@@ -88,7 +89,7 @@ function getPositionalTypeSimilarities(
   return { belowTwoTilesExistAndSameType, leftTwoTilesSameType };
 }
 
-function initBoard() {
+export function initBoard() {
   const board: Array<Array<Tile>> = Array(BOARD_WIDTH).fill([]) as Array<Array<Tile>>;
   for (let x = 0; x < BOARD_WIDTH; x++) {
     board[x] = generateColumn(board, x);

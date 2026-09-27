@@ -3,23 +3,22 @@
 	import { fade, fly } from 'svelte/transition';
 
 	import Tile from './tile.svelte';
-	import { addRow, board, checkLoss, removeTile, seed } from './store';
+	import { lost, board, checkLoss, initBoard, removeTile, seed } from './store';
 
-    let lost = false
-
-    board.subscribe((board) => {
-        lost = checkLoss(board)
-    })
 
 	function handleTileClick(tileX: number, tileY: number) {
-        if (!lost) {
+        if (!$lost) {
             removeTile(tileX, tileY);
         }
 	}
+
+    function resetBoard() {
+        board.set(initBoard())
+    }
 </script>
 
 
-<section class={{lost}}>
+<section class={{lost: $lost}}>
 	{#each $board as column, tileX (tileX)}
 		<div class="column">
 			{#each column as tile, tileY (tile.id)}
