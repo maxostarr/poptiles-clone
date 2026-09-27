@@ -3,7 +3,7 @@
 	import { fade } from 'svelte/transition';
 
 	import Tile from './tile.svelte';
-	import { board, BOARD_WIDTH, removeTile } from './store';
+	import { board, removeTile, seed } from './store';
 
 	function handleTileClick(tileX: number, tileY: number) {
 		removeTile(tileX, tileY);
@@ -12,6 +12,7 @@
 </script>
 
 <section>
+	<p>{seed}</p>
 	<!-- Create ten tiles for testing -->
 
 	{#each $board as column, tileX (tileX)}
@@ -23,7 +24,7 @@
 					out:fade={{ duration: 100 }}
 					on:click={() => handleTileClick(tileX, tileY)}
 				>
-					<Tile type={tile.type} />
+					<Tile type={tile.type} likeNeighbors={tile.likeNeighbors}/>
 				</div>
 			{/each}
 		</div>
