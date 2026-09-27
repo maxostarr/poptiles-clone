@@ -12,9 +12,6 @@
         }
 	}
 
-    function resetBoard() {
-        board.set(initBoard())
-    }
 </script>
 
 
@@ -39,7 +36,7 @@
 <style>
     .lost {
         pointer-events: none;
-        filter: grayscale(100%);
+        filter: grayscale(100%) blur(3px);
     }
 	.column {
 		display: flex;

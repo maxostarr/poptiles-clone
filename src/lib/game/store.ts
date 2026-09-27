@@ -26,7 +26,7 @@ export const seed = "0.4574482531201898";
 
 const rand = new Rand(seed);
 
-export const board: Writable<Tile[][]> = writable(resolveTileGroups(initBoard()));
+export const board: Writable<Tile[][]> = writable(initBoard());
 export const lost = derived(board, checkLoss);
 
 function generateColumn(currentBoard: Tile[][], x: number) {
@@ -94,7 +94,7 @@ export function initBoard() {
   for (let x = 0; x < BOARD_WIDTH; x++) {
     board[x] = generateColumn(board, x);
   }
-  return board;
+  return resolveTileGroups(board);
 }
 
 export function addRow(board: Tile[][]): Tile[][] {
