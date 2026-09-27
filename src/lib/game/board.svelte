@@ -3,16 +3,20 @@
 	import { fade } from 'svelte/transition';
 
 	import Tile from './tile.svelte';
-	import { board, removeTile, seed } from './store';
+	import { addRow, board, removeTile, seed } from './store';
 
 	function handleTileClick(tileX: number, tileY: number) {
 		removeTile(tileX, tileY);
 		console.log($board);
 	}
+    function debugAddRow() {
+        board.update(addRow)
+    }
 </script>
 
+<button on:click={debugAddRow}>add row</button>
 <section>
-	<p>{seed}</p>
+	<!-- <p>{seed}</p> -->
 	<!-- Create ten tiles for testing -->
 
 	{#each $board as column, tileX (tileX)}

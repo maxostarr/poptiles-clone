@@ -21,8 +21,8 @@ interface Pos {
   y: number;
 }
 
-// export const seedRaw = Math.random().toString();
-export const seed = "0.5142509190215702";
+export const seed = Math.random().toString();
+// export const seed = "0.5142509190215702";
 
 const rand = new Rand(seed);
 
@@ -96,19 +96,27 @@ function initBoard() {
   return board;
 }
 
-function* getAdjacentTiles(board: Tile[][], x: number, y: number) {
-  if (x > 0 && board[x - 1][y]) {
-    yield board[x - 1][y];
+export function addRow(board: Tile[][]): Tile[][] {
+  const newBoard = structuredClone(board);
+  for (let x = 0; x < board.length; x++) {
+    const columnBottom = board[x][0];
+    const leftTwoTilesLike = x > 1 && board[x - 2][0].type === board[x - 1][0].type;
+    const availableTypes = tileTypes
+      .filter((t) => (columnBottom.likeNeighbors.north ? t !== columnBottom.type : true))
+      .filter((t) => (leftTwoTilesLike ? t !== board[x - 2][0].type : true));
+    const newTileType = availableTypes[Math.floor(rand.next() * availableTypes.length)];
+    newBoard[x].unshift({
+      id: crypto.randomUUID(),
+      type: newTileType,
+      likeNeighbors: {
+        east: false,
+        north: false,
+        south: false,
+        west: false,
+      },
+    });
   }
-  if (x < BOARD_WIDTH - 1 && board[x + 1][y]) {
-    yield board[x + 1][y];
-  }
-  if (y > 0 && board[x][y - 1]) {
-    yield board[x][y - 1];
-  }
-  if (y < BOARD_HEIGHT - 1 && board[x][y + 1]) {
-    yield board[x][y + 1];
-  }
+  return newBoard;
 }
 
 function findTileLocation(board: Tile[][], tile: Tile) {

@@ -33,6 +33,7 @@
 <style>
 	.tile {
         --tile-color: red;
+        box-sizing: border-box;
 		width: 50px;
 		height: 50px;
 		text-align: center;
