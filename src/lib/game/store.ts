@@ -21,8 +21,8 @@ interface Pos {
   y: number;
 }
 
-export const seed = Math.random().toString();
-// export const seed = "0.5142509190215702";
+// export const seed = Math.random().toString();
+export const seed = "0.4574482531201898";
 
 const rand = new Rand(seed);
 
@@ -102,8 +102,8 @@ export function addRow(board: Tile[][]): Tile[][] {
     const columnBottom = board[x][0];
     const leftTwoTilesLike = x > 1 && newBoard[x - 2][0].type === newBoard[x - 1][0].type;
     const availableTypes = tileTypes
-      .filter((t) => (columnBottom.likeNeighbors.north ? t !== columnBottom.type : true))
-      .filter((t) => (leftTwoTilesLike ? t !== board[x - 2][0].type : true));
+      .filter((t) => (columnBottom?.likeNeighbors.north ? t !== columnBottom.type : true))
+      .filter((t) => (leftTwoTilesLike ? t !== newBoard[x - 2][0].type : true));
     const newTileType = availableTypes[Math.floor(rand.next() * availableTypes.length)];
     newBoard[x].unshift({
       id: crypto.randomUUID(),
@@ -116,7 +116,7 @@ export function addRow(board: Tile[][]): Tile[][] {
       },
     });
   }
-  return newBoard;
+  return resolveTileGroups(newBoard);
 }
 
 function findTileLocation(board: Tile[][], tile: Tile) {
@@ -234,6 +234,8 @@ export async function removeTile(x: number, y: number) {
     });
   }
 
+  board.update(addRow);
+
   function removeTilesFromBoard(board: Tile[][], tiles: Tile[]) {
     for (const tile of tiles) {
       removeTileFromBoard(board, tile);
@@ -253,6 +255,10 @@ function resolveTileGroups(board: Tile[][]) {
     }
   }
   return board;
+}
+
+export function checkLoss(board: Tile[][]) {
+  return board.some((column) => column.length >= BOARD_HEIGHT);
 }
 
 function resolveTileNeighbors(board: Tile[][], pos: { x: number; y: number }) {

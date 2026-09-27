@@ -31,11 +31,14 @@
 </div>
 
 <style>
+:root{
+    --tile-size: 50px
+}
 	.tile {
         --tile-color: red;
         box-sizing: border-box;
-		width: 50px;
-		height: 50px;
+		width: var(--tile-size);
+		height: var(--tile-size);
 		text-align: center;
 		border: 2px solid white;
         background-color: var(--tile-color)

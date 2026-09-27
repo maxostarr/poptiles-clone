@@ -3,22 +3,18 @@
 	import { fade } from 'svelte/transition';
 
 	import Tile from './tile.svelte';
-	import { addRow, board, removeTile, seed } from './store';
+	import { addRow, board, checkLoss, removeTile, seed } from './store';
+
+    let lost = false
 
 	function handleTileClick(tileX: number, tileY: number) {
 		removeTile(tileX, tileY);
-		console.log($board);
+        lost = checkLoss($board)
 	}
-    function debugAddRow() {
-        board.update(addRow)
-    }
 </script>
 
-<button on:click={debugAddRow}>add row</button>
-<section>
-	<!-- <p>{seed}</p> -->
-	<!-- Create ten tiles for testing -->
 
+<section>
 	{#each $board as column, tileX (tileX)}
 		<div class="column">
 			{#each column as tile, tileY (tile.id)}
@@ -39,8 +35,9 @@
 	.column {
 		display: flex;
 		flex-direction: column-reverse;
-		height: 900px;
+		height: calc(var(--tile-size) * 14);
 		width: 50px;
+        border-top: 5px solid white;
 	}
 
 	section {

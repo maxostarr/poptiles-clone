@@ -1,22 +1,22 @@
 {
-	"$schema": "./node_modules/oxlint/configuration_schema.json",
-	"plugins": ["typescript", "unicorn", "oxc"],
-	"categories": {
-		"correctness": "error"
-	},
-	"env": {
-		"builtin": true,
-		"browser": true,
-		"es2017": true,
-		"node": true
-	},
-	"ignorePatterns": [
-		"*.cjs",
-		"/build",
-		"/.svelte-kit",
-		"/package",
-		".env",
-		".env.*",
-		"!.env.example"
-	]
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "builtin": true,
+    "browser": true,
+    "es2017": true,
+    "node": true
+  },
+  "ignorePatterns": [
+    "*.cjs",
+    "/build",
+    "/.svelte-kit",
+    "/package",
+    ".env",
+    ".env.*",
+    "!.env.example"
+  ]
 }

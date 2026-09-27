@@ -11,8 +11,22 @@
 <section>
 	<h1>Clone of Poptiles</h1>
 
-	<Board />
-</section>
+    <div class="wrapper">
+
+        <Board />
+    </div>
+    </section>
 
 <style>
+section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.wrapper{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
 </style>
