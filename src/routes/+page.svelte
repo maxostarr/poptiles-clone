@@ -1,11 +1,6 @@
 <script>
 	import Board from '$lib/game/board.svelte';
-	import {board, initBoard, lost, removedCount} from '$lib/game/store';
-
-    function resetBoard() {
-        board.set(initBoard())
-        removedCount.set(0)
-    }
+	import { lost, removedCount, reset } from '$lib/game/store.svelte';
 </script>
 
 <svelte:head>
@@ -16,51 +11,51 @@
 <section>
 	<h1>Clone of Poptiles</h1>
 
-    <div>
-        <h2>Removed: {$removedCount}</h2>
-    </div>
+	<div>
+		<h2>Removed: {$removedCount}</h2>
+	</div>
 
-    <div class="wrapper">
-        {#if $lost}
-            <button on:click={resetBoard}>Retry</button>
-        {/if}
-        <Board />
-    </div>
-    </section>
+	<div class="wrapper">
+		{#if $lost}
+			<button on:click={reset}>Retry</button>
+		{/if}
+		<Board />
+	</div>
+</section>
 
 <style>
-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
+	section {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+	}
 
-button {
-    -webkit-appearance: none;
-  border-radius: 0;
-  text-align: inherit;
-  background: none;
-  box-shadow: none;
-  padding: 0;
-  cursor: pointer;
-  border: none;
-  color: inherit;
-  font: inherit;
-  background-color: #03fceca0;
-  width: calc(var(--tile-size)*2);
-  height: calc(var(--tile-size)*2);
-  text-align: center;
-  border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: calc(50%-var(--tile-size));
-    z-index: 10;
-}
+	button {
+		-webkit-appearance: none;
+		border-radius: 0;
+		text-align: inherit;
+		background: none;
+		box-shadow: none;
+		padding: 0;
+		cursor: pointer;
+		border: none;
+		color: inherit;
+		font: inherit;
+		background-color: #03fceca0;
+		width: calc(var(--tile-size) * 2);
+		height: calc(var(--tile-size) * 2);
+		text-align: center;
+		border-radius: 50%;
+		position: absolute;
+		top: 50%;
+		left: calc(50%-var(--tile-size));
+		z-index: 10;
+	}
 
-.wrapper{
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center
-}
+	.wrapper {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 </style>

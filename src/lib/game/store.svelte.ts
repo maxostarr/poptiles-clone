@@ -1,127 +1,58 @@
-import { writable, type Writable, derived } from "svelte/store";
+import { writable, type Writable, derived, get } from "svelte/store";
 import Rand from "rand-seed";
+import { Tile, Board, Direction, Pos } from "./types";
+import { STARTING_HEIGHT, BOARD_WIDTH, BOARD_HEIGHT } from "./constants";
+import { newTile, initNeighbors } from "./newTile";
 
-export const tileTypes = [0, 1, 2, 3];
-
-export const BOARD_WIDTH = 7;
-export const BOARD_HEIGHT = 14;
-export const STARTING_HEIGHT = 3;
-
-const Direction = ["north", "south", "east", "west"] as const;
-type Direction = (typeof Direction)[number];
-
-export interface Tile {
-  id: string;
-  type: number;
-  likeNeighbors: Record<Direction, boolean>;
-}
-
-interface Pos {
-  x: number;
-  y: number;
-}
-
-// export const seed = Math.random().toString();
-export const seed = "0.4574482531201898";
+export const seed = Math.random().toString();
+// export const seed = "0.4574482531201898";
 
 const rand = new Rand(seed);
-
-export const board: Writable<Tile[][]> = writable(initBoard());
+export const tileTypes: Writable<Array<number>> = writable([0, 1, 2, 3]);
+export const board: Writable<Board> = writable(initBoard());
 export const lost = derived(board, checkLoss);
 export const removedCount: Writable<number> = writable(0);
+export const colorScheme: Writable<number> = writable(0);
 
-function generateColumn(currentBoard: Tile[][], x: number) {
-  const column: Tile[] = [];
-  for (let y = 0; y < STARTING_HEIGHT; y++) {
-    const { belowTwoTilesExistAndSameType, leftTwoTilesSameType } = getPositionalTypeSimilarities(
-      column,
-      currentBoard,
-      y,
-      x,
-    );
-    const availableTypes = getAvailableTypes(
-      column,
-      currentBoard,
-      belowTwoTilesExistAndSameType,
-      leftTwoTilesSameType,
-      y,
-      x,
-    );
-
-    const type = availableTypes[Math.floor(rand.next() * availableTypes.length)];
-    column.push({
-      id: crypto.randomUUID(),
-      type,
-      likeNeighbors: {
-        east: false,
-        north: false,
-        south: false,
-        west: false,
-      },
-    });
+removedCount.subscribe((count) => {
+  if (count > 200) {
+    tileTypes.set([0, 1, 2, 3, 4]);
   }
-  return column;
-}
-
-function getAvailableTypes(
-  column: Tile[],
-  currentBoard: Tile[][],
-  belowTwoTilesExistAndSameType: boolean,
-  leftTwoTilesSameType: boolean,
-  y: number,
-  x: number,
-) {
-  return tileTypes.filter(
-    (type) =>
-      !(belowTwoTilesExistAndSameType && type === column[y - 1]?.type) &&
-      !(leftTwoTilesSameType && type === currentBoard[x - 1][y]?.type),
-  );
-}
-
-function getPositionalTypeSimilarities(
-  column: Tile[],
-  currentBoard: Tile[][],
-  y: number,
-  x: number,
-) {
-  const leftTwoTilesSameType =
-    x >= 2 && currentBoard[x - 1][y]?.type === currentBoard[x - 2][y]?.type;
-  const belowTwoTilesExistAndSameType = column[y - 2]?.type === column[y - 1]?.type;
-  return { belowTwoTilesExistAndSameType, leftTwoTilesSameType };
-}
+});
 
 export function initBoard() {
-  const board: Array<Array<Tile>> = Array(BOARD_WIDTH).fill([]) as Array<Array<Tile>>;
-  for (let x = 0; x < BOARD_WIDTH; x++) {
-    board[x] = generateColumn(board, x);
+  let board: Array<Array<Tile>> = Array(BOARD_WIDTH)
+    .fill(0)
+    .map(() => []) as Array<Array<Tile>>;
+  for (let i = 0; i < STARTING_HEIGHT; i++) {
+    console.log(board);
+    board = addRow(board);
   }
   return resolveTileGroups(board);
 }
 
-export function addRow(board: Tile[][]): Tile[][] {
+export function reset() {
+  board.set(initBoard());
+  removedCount.set(0);
+  tileTypes.set([0, 1, 2, 3]);
+}
+
+export function addRow(board: Board): Board {
   const newBoard = structuredClone(board);
   for (let x = 0; x < board.length; x++) {
     const columnBottom = board[x][0];
     const leftTwoTilesLike = x > 1 && newBoard[x - 2][0].type === newBoard[x - 1][0].type;
-    const availableTypes = tileTypes
-      .filter((t) => (columnBottom?.likeNeighbors.north ? t !== columnBottom.type : true))
+    const twoTopTilesLike = newBoard[x][0]?.type === newBoard[x][1]?.type;
+    const availableTypes = get(tileTypes)
+      .filter((t) => (twoTopTilesLike && columnBottom ? t !== columnBottom.type : true))
       .filter((t) => (leftTwoTilesLike ? t !== newBoard[x - 2][0].type : true));
     const newTileType = availableTypes[Math.floor(rand.next() * availableTypes.length)];
-    newBoard[x].unshift({
-      id: crypto.randomUUID(),
-      type: newTileType,
-      likeNeighbors: {
-        east: false,
-        north: false,
-        south: false,
-        west: false,
-      },
-    });
+    newBoard[x].unshift(newTile(newTileType));
   }
   return resolveTileGroups(newBoard);
 }
 
-function findTileLocation(board: Tile[][], tile: Tile) {
+function findTileLocation(board: Board, tile: Tile) {
   for (let x = 0; x < board.length; x++) {
     for (let y = 0; y < board[x].length; y++) {
       if (board[x][y].id === tile.id) {
@@ -145,7 +76,7 @@ function moveInDirection(pos: Pos, direction: Direction) {
   }
 }
 
-function findLikeAdjacentTiles(board: Tile[][], tile: Tile) {
+function findLikeAdjacentTiles(board: Board, tile: Tile) {
   const { x, y } = findTileLocation(board, tile);
   const tiles: Tile[] = [];
   for (const direction of Object.keys(tile.likeNeighbors) as Array<keyof Tile["likeNeighbors"]>) {
@@ -158,7 +89,7 @@ function findLikeAdjacentTiles(board: Tile[][], tile: Tile) {
   return tiles;
 }
 
-function findAllLikeConnectedTiles(board: Tile[][], startingTile: Tile) {
+function findAllLikeConnectedTiles(board: Board, startingTile: Tile) {
   const tiles: Tile[] = [];
   const visited: Tile[] = [];
   const queue: Tile[] = [startingTile];
@@ -186,7 +117,7 @@ function isThreeLineCenter(tile: Tile) {
   );
 }
 
-function findTilePosInGroupsOfThree(board: Tile[][]) {
+function findTilePosInGroupsOfThree(board: Board) {
   const groups: Set<`${number}-${number}`> = new Set();
   for (let x = 0; x < BOARD_WIDTH; x++) {
     for (let y = 0; y < BOARD_HEIGHT; y++) {
@@ -205,8 +136,8 @@ function findTilePosInGroupsOfThree(board: Tile[][]) {
   return groups;
 }
 
-function removeTilesInGroupsOfThree(currentBoard: Tile[][]) {
-  const board: Tile[][] = JSON.parse(JSON.stringify(currentBoard));
+function removeTilesInGroupsOfThree(currentBoard: Board) {
+  const board: Board = JSON.parse(JSON.stringify(currentBoard));
   const tilePositions = findTilePosInGroupsOfThree(board);
   for (const tilePos of tilePositions) {
     const [x, y] = tilePos.split("-").map(Number);
@@ -239,20 +170,20 @@ export async function removeTile(x: number, y: number) {
 
   board.update(addRow);
 
-  function removeTilesFromBoard(board: Tile[][], tiles: Tile[]) {
+  function removeTilesFromBoard(board: Board, tiles: Tile[]) {
     for (const tile of tiles) {
       removeTileFromBoard(board, tile);
     }
   }
 
-  function removeTileFromBoard(board: Tile[][], tile: Tile) {
+  function removeTileFromBoard(board: Board, tile: Tile) {
     const { x } = findTileLocation(board, tile);
     board[x] = board[x].filter((t) => t.id !== tile.id);
     removedCount.update((c) => c + 1);
   }
 }
 
-function resolveTileGroups(board: Tile[][]) {
+function resolveTileGroups(board: Board) {
   for (let x = 0; x < board.length; x++) {
     for (let y = 0; y < board[x].length; y++) {
       resolveTileNeighbors(board, { x, y });
@@ -261,18 +192,13 @@ function resolveTileGroups(board: Tile[][]) {
   return board;
 }
 
-export function checkLoss(board: Tile[][]) {
+export function checkLoss(board: Board) {
   return board.some((column) => column.length > BOARD_HEIGHT);
 }
 
-function resolveTileNeighbors(board: Tile[][], pos: { x: number; y: number }) {
+function resolveTileNeighbors(board: Board, pos: Pos) {
   const { type } = board[pos.x][pos.y];
-  board[pos.x][pos.y].likeNeighbors = {
-    east: false,
-    north: false,
-    south: false,
-    west: false,
-  };
+  board[pos.x][pos.y].likeNeighbors = initNeighbors();
   if (pos.x > 0 && board[pos.x - 1][pos.y] && board[pos.x - 1][pos.y].type === type) {
     board[pos.x][pos.y].likeNeighbors.west = true;
   }
