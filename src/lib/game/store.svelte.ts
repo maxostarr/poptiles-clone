@@ -31,7 +31,6 @@ export function initBoard() {
     .fill(0)
     .map(() => []) as Array<Array<Tile>>;
   for (let i = 0; i < STARTING_HEIGHT; i++) {
-    console.log(board);
     board = addRow(board);
   }
   return resolveTileGroups(board);
@@ -154,7 +153,7 @@ function removeTilesInGroupsOfThree(currentBoard: Board) {
   return [cleanedBoard, tilePositions.size] as const;
 }
 
-export async function removeTile(x: number, y: number) {
+export async function removeTile({ x, y }: Pos) {
   board.update((board) => {
     const tiles = findAllLikeConnectedTiles(board, board[x][y]);
     removeTilesFromBoard(board, tiles);

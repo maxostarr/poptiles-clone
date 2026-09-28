@@ -5,10 +5,14 @@
 	import Tile from './tile.svelte';
 	import { lost, board, removeTile } from './store.svelte';
 	import { ANIMATION_DURATION, WAIT_TIME } from './constants';
+	import type { Pos } from './types';
 
-	function handleTileClick(tileX: number, tileY: number) {
+	function handleTileClick({ x, y }: Pos) {
 		if (!$lost) {
-			removeTile(tileX, tileY);
+			removeTile({
+				x,
+				y
+			});
 		}
 	}
 </script>
@@ -22,7 +26,11 @@
 					animate:flip={{ duration: ANIMATION_DURATION, delay: ANIMATION_DURATION + WAIT_TIME }}
 					in:fly={{ y: 50, duration: ANIMATION_DURATION, delay: ANIMATION_DURATION + WAIT_TIME }}
 					out:fade={{ duration: ANIMATION_DURATION }}
-					on:click={() => handleTileClick(tileX, tileY)}
+					on:click={() =>
+						handleTileClick({
+							x: tileX,
+							y: tileY
+						})}
 				>
 					<Tile type={tile.type} likeNeighbors={tile.likeNeighbors} />
 				</div>
