@@ -38,9 +38,9 @@ export function initBoard() {
 }
 
 export function reset() {
-  board.set(initBoard());
   removedCount.set(0);
   tileTypes.set([0, 1, 2, 3]);
+  board.set(initBoard());
 }
 
 export function addRow(board: Board): Board {
