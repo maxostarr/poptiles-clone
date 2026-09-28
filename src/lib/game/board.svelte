@@ -3,8 +3,8 @@
 	import { fade, fly } from 'svelte/transition';
 
 	import Tile from './tile.svelte';
-	import { lost, board, checkLoss, initBoard, removeTile, seed } from './store.svelte';
-	import { popAway } from './popAway';
+	import { lost, board, removeTile } from './store.svelte';
+	import { ANIMATION_DURATION, WAIT_TIME } from './constants';
 
 	function handleTileClick(tileX: number, tileY: number) {
 		if (!$lost) {
@@ -19,9 +19,9 @@
 			{#each column as tile, tileY (tile.id)}
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div
-					animate:flip={{ duration: 100, delay: 150 }}
-					in:fly={{ y: 50, duration: 100, delay: 150 }}
-					out:fade={{ duration: 100 }}
+					animate:flip={{ duration: ANIMATION_DURATION, delay: ANIMATION_DURATION + WAIT_TIME }}
+					in:fly={{ y: 50, duration: ANIMATION_DURATION, delay: ANIMATION_DURATION + WAIT_TIME }}
+					out:fade={{ duration: ANIMATION_DURATION }}
 					on:click={() => handleTileClick(tileX, tileY)}
 				>
 					<Tile type={tile.type} likeNeighbors={tile.likeNeighbors} />

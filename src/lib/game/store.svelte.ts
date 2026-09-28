@@ -1,7 +1,13 @@
 import { writable, type Writable, derived, get } from "svelte/store";
 import Rand from "rand-seed";
 import { Tile, Board, Direction, Pos } from "./types";
-import { STARTING_HEIGHT, BOARD_WIDTH, BOARD_HEIGHT } from "./constants";
+import {
+  STARTING_HEIGHT,
+  BOARD_WIDTH,
+  BOARD_HEIGHT,
+  ANIMATION_DURATION,
+  WAIT_TIME,
+} from "./constants";
 import { newTile, initNeighbors } from "./newTile";
 
 export const seed = Math.random().toString();
@@ -49,7 +55,7 @@ export function addRow(board: Board): Board {
     const newTileType = availableTypes[Math.floor(rand.next() * availableTypes.length)];
     newBoard[x].unshift(newTile(newTileType));
   }
-  return resolveTileGroups(newBoard);
+  return newBoard;
 }
 
 function findTileLocation(board: Board, tile: Tile) {
@@ -159,7 +165,7 @@ export async function removeTile(x: number, y: number) {
   let newBoard;
   let tilesRemoved = 1;
   while (tilesRemoved > 0) {
-    await sleep(300);
+    await sleep(ANIMATION_DURATION + WAIT_TIME * 4);
     board.update((board) => {
       // Remove all tiles in groups of three
       // Until no more tiles are removed
@@ -169,6 +175,7 @@ export async function removeTile(x: number, y: number) {
   }
 
   board.update(addRow);
+  board.update(resolveTileGroups);
 
   function removeTilesFromBoard(board: Board, tiles: Tile[]) {
     for (const tile of tiles) {
